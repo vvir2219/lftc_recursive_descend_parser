@@ -83,8 +83,10 @@ class NonTerminal:
             maxdepth -= 1
 
         matches = []
+        values = []
         for matcher in self._matchers:
             matches.append(matcher.match(string, maxdepth))
+            values.append(matcher.value)
 
         if not any(matches):
             return None
@@ -98,7 +100,8 @@ class NonTerminal:
                 if len(matches[i][0]) > len(matches[max_match_idx][0]):
                     max_match_idx = i
 
-        self.value = self._matchers[max_match_idx].value
+        # self.value = self._matchers[max_match_idx].value
+        self.value = values[max_match_idx]
         return matches[max_match_idx]
 
     def add(self, matchers, fun=None):
