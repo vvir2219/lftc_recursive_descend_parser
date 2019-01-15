@@ -150,3 +150,39 @@ def expr_matcher():
     addition.add([multiplication, minus, addition], lambda x :x[0] - x[2])
 
     return addition
+
+def expr_matcher2():
+    def t(name):
+        def terminal(value):
+            return {"name" : name, "value" : value}
+        return terminal
+
+    def nt(name):
+        def nonterminal(values):
+            return {"name" : name, "productions" : values}
+        return nonterminal
+
+    integer = Terminal(r"0|([1-9][0-9]*)", t("integer"))
+    plus = Terminal(r"\+", t("plus"))
+    star = Terminal(r"\*", t("star"))
+    minus = Terminal(r"-", t("minus"))
+    slash = Terminal(r"/", t("slash"))
+    open_paranthesis = Terminal(r"\(", t("open_paranthesis"))
+    closed_paranthesis = Terminal(r"\)", t("closed_paranthesis"))
+
+    term = NonTerminal()
+    addition = NonTerminal()
+    multiplication = NonTerminal()
+
+    term.add([integer], nt("term"))
+    term.add([open_paranthesis, addition, closed_paranthesis], nt("term"))
+
+    multiplication.add([term], nt("multiplication"))
+    multiplication.add([term, star, multiplication], nt("multiplication"))
+    multiplication.add([term, slash, multiplication], nt("multiplication"))
+
+    addition.add([multiplication], nt("addition"))
+    addition.add([multiplication, plus, addition], nt("addition"))
+    addition.add([multiplication, minus, addition], nt("addition"))
+
+    return addition
